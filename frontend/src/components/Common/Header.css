@@ -1,0 +1,30 @@
+.header {
+    background: var(--bg-primary);
+    padding: 20px 30px;
+    box-shadow: 0 5px 15px var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.header h1 {
+    color: var(--primary);
+    font-size: 1.8em;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto;
+    z-index: 1;
+}
+
+.user-name {
+    color: var(--text-secondary);
+}

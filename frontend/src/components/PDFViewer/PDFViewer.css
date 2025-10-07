@@ -1,0 +1,183 @@
+.pdf-viewer-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-secondary);
+}
+
+.pdf-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 5px var(--shadow);
+}
+
+.pdf-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1em;
+}
+
+.pdf-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toolbar-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.toolbar-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary);
+}
+
+.zoom-level {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    min-width: 50px;
+    text-align: center;
+}
+
+.pdf-content {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    background: var(--bg-secondary);
+    padding: 20px;
+}
+
+.pdf-content iframe {
+    border: none;
+    box-shadow: 0 4px 20px var(--shadow);
+    background: white;
+    display: block;
+    margin: 0 auto;
+}
+
+.text-selection-toolbar {
+    position: fixed;
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 4px 12px var(--shadow);
+    z-index: 1000;
+    top: 50%;
+    right: 370px;
+    transform: translateY(-50%);
+}
+
+.highlight-btn,
+.note-btn {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.highlight-btn:hover,
+.note-btn:hover {
+    background: var(--bg-secondary);
+    transform: scale(1.1);
+}
+
+.note-input-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.note-input-content {
+    background: var(--bg-primary);
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px var(--shadow);
+}
+
+.note-input-content h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.note-context {
+    background: var(--bg-secondary);
+    padding: 10px;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+
+.note-input-content textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    margin-bottom: 15px;
+}
+
+.note-input-content textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.note-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.pdf-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pdf-content::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+}
+
+.pdf-content::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 5px;
+}
+
+.pdf-content::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}

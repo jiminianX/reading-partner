@@ -1,0 +1,51 @@
+.notes-panel {
+    background: var(--bg-primary);
+    padding: 20px;
+    box-shadow: 0 5px 15px var(--shadow);
+    height: fit-content;
+    max-height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
+.notes-panel h3 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+}
+
+.notes-list {
+    /* Notes list styles */
+}
+
+.note-item {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    background: var(--bg-secondary);
+}
+
+.note-item:hover {
+    background: var(--bg-tertiary);
+    transform: translateX(2px);
+}
+
+.notes-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notes-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notes-panel::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.notes-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
