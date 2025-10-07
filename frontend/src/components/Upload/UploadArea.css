@@ -17,6 +17,30 @@
     max-width: 600px;
     width: 100%;
 }
+.upload-area.processing {
+    background: var(--bg-secondary);
+    border-color: var(--primary);
+}
+
+.processing-animation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 8px;
+    background: var(--bg-tertiary);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+    transition: width 0.3s ease;
+}
 
 .upload-area:hover,
 .upload-area.drag-over {

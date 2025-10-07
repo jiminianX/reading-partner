@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "firebase": "^12.3.0",
-    "pdfjs-dist": "^5.4.149",
+    "pdfjs-dist": "^5.4.296",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.3",

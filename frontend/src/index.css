@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
 
 :root {
-    --primary: #ff6b4a;
-    --primary-dark: #d95532;
-    --secondary: #ffb8a3;
+    --primary: #C28CE2;
+    --primary-dark: #7f2189;
+    --secondary: #e9b0e2;
     --bg-primary: #ffffff;
-    --bg-secondary: #fff5f0;
-    --bg-tertiary: #ffe5d9;
+    --bg-secondary: #f3e5f2;
+    --bg-tertiary: #e4c6e2;
     --text-primary: #333333;
     --text-secondary: #666666;
-    --text-tertiary: #999999;
+    --text-tertiary: #ffffff;
     --border: #ffe5d9;
     --shadow: rgba(255, 107, 74, 0.1);
 }
 
 [data-theme="dark"] {
-    --primary: #ff8566;
-    --primary-dark: #ff6b4a;
-    --secondary: #d95532;
+    --primary: #7f2189;
+    --primary-dark: #C28CE2;
+    --secondary: #5f2d59;
     --bg-primary: #1a1a1a;
     --bg-secondary: #2d2d2d;
     --bg-tertiary: #404040;

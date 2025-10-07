@@ -13,6 +13,7 @@
     background: var(--bg-primary);
     border-bottom: 1px solid var(--border);
     box-shadow: 0 2px 5px var(--shadow);
+    flex-shrink: 0;
 }
 
 .pdf-title {
@@ -45,6 +46,7 @@
 .toolbar-btn:hover {
     background: var(--bg-tertiary);
     border-color: var(--primary);
+    transform: scale(1.05);
 }
 
 .zoom-level {
@@ -54,54 +56,147 @@
     text-align: center;
 }
 
-.pdf-content {
-    flex: 1;
-    overflow: auto;
-    position: relative;
-    background: var(--bg-secondary);
-    padding: 20px;
+.page-info {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    padding-left: 15px;
+    border-left: 1px solid var(--border);
 }
 
-.pdf-content iframe {
-    border: none;
-    box-shadow: 0 4px 20px var(--shadow);
+.pdf-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: auto;
+    background: #525659;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.pdf-page {
+    position: relative;
     background: white;
-    display: block;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     margin: 0 auto;
 }
 
-.text-selection-toolbar {
+.pdf-page canvas {
+    display: block;
+}
+
+/* Text Layer for Selection */
+.textLayer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    opacity: 0.2;
+    line-height: 1;
+}
+
+.textLayer > div {
+    color: transparent;
+    position: absolute;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0% 0%;
+}
+
+.textLayer ::selection {
+    background: rgba(0, 123, 255, 0.3);
+}
+
+/* Highlight Layer */
+.highlightLayer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.highlight-overlay {
+    position: absolute;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.highlight-overlay:hover {
+    opacity: 0.5 !important;
+}
+
+/* Context Menu */
+.context-menu-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+}
+
+.context-menu {
     position: fixed;
     background: var(--bg-primary);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 8px;
-    display: flex;
-    gap: 8px;
     box-shadow: 0 4px 12px var(--shadow);
     z-index: 1000;
-    top: 50%;
-    right: 370px;
-    transform: translateY(-50%);
+    min-width: 200px;
+    padding: 8px 0;
+    animation: contextMenuFadeIn 0.15s ease;
 }
 
-.highlight-btn,
-.note-btn {
-    background: none;
+@keyframes contextMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.context-menu button {
+    width: 100%;
+    padding: 10px 16px;
     border: none;
-    font-size: 1.5em;
+    background: none;
+    color: var(--text-primary);
+    text-align: left;
     cursor: pointer;
-    padding: 6px;
-    border-radius: 6px;
-    transition: all 0.2s ease;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s ease;
 }
 
-.highlight-btn:hover,
-.note-btn:hover {
+.context-menu button:hover {
     background: var(--bg-secondary);
-    transform: scale(1.1);
 }
 
+.color-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.menu-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+}
+
+/* Note Input Modal */
 .note-input-modal {
     position: fixed;
     top: 0;
@@ -113,6 +208,16 @@
     align-items: center;
     justify-content: center;
     z-index: 2000;
+    animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .note-input-content {
@@ -122,6 +227,18 @@
     width: 90%;
     max-width: 500px;
     box-shadow: 0 10px 40px var(--shadow);
+    animation: modalSlideUp 0.3s ease;
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .note-input-content h4 {
@@ -132,12 +249,14 @@
 
 .note-context {
     background: var(--bg-secondary);
-    padding: 10px;
+    padding: 12px;
     border-radius: 6px;
     color: var(--text-secondary);
     font-style: italic;
     margin-bottom: 15px;
     font-size: 0.9em;
+    max-height: 100px;
+    overflow-y: auto;
 }
 
 .note-input-content textarea {
@@ -165,19 +284,47 @@
     justify-content: flex-end;
 }
 
+/* Scrollbar Styles */
 .pdf-content::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
+    height: 12px;
 }
 
 .pdf-content::-webkit-scrollbar-track {
-    background: var(--bg-tertiary);
+    background: #3d4043;
 }
 
 .pdf-content::-webkit-scrollbar-thumb {
-    background: var(--border);
-    border-radius: 5px;
+    background: #5f6368;
+    border-radius: 6px;
 }
 
 .pdf-content::-webkit-scrollbar-thumb:hover {
-    background: var(--text-tertiary);
+    background: #7f8388;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .pdf-toolbar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .pdf-title {
+        text-align: center;
+    }
+
+    .pdf-controls {
+        justify-content: center;
+    }
+
+    .context-menu {
+        min-width: 180px;
+    }
+
+    .note-input-content {
+        width: 95%;
+        padding: 20px;
+    }
 }
