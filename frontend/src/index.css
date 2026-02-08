@@ -1,12 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
 
 :root {
-    --primary: #C28CE2;
-    --primary-dark: #7f2189;
-    --secondary: #e9b0e2;
-    --bg-primary: #ffffff;
-    --bg-secondary: #f3e5f2;
-    --bg-tertiary: #e4c6e2;
+    --primary: #768ac1;
+    --primary-dark: #160a42;
+    --secondary: #ab9be5;
+    --bg-primary: #f2f0e4;
+    --bg-secondary: #9c97d9;
+    --bg-tertiary: #170937;
     --text-primary: #333333;
     --text-secondary: #666666;
     --text-tertiary: #ffffff;

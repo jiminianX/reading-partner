@@ -73,7 +73,14 @@ export default function RightPanel({
                     <div className="highlights-tab">
                         {highlights.length === 0 ? (
                             <div className="empty-state">
-                                <div className="empty-icon">✨</div>
+                                <div className="empty-icon">
+                                    <img 
+                                        src="https://www.clipartmax.com/png/middle/157-1574277_highlight-icon-highlight.png" 
+                                        alt="Highlighter pen" 
+                                        style={{ width: '80px', height: '60px' }}
+                                    />
+
+                                </div>
                                 <p>No highlights yet</p>
                                 <small>Select text and choose a color to highlight</small>
                             </div>
@@ -121,7 +128,13 @@ export default function RightPanel({
                     <div className="notes-tab">
                         {notes.length === 0 ? (
                             <div className="empty-state">
-                                <div className="empty-icon">📝</div>
+                                <div className="empty-icon">
+                                    <img 
+                                        src="https://cdn-icons-png.freepik.com/512/7235/7235470.png" 
+                                        alt="Page with bullet points and a pencil" 
+                                        style={{ width: '60px', height: '60px' }}
+                                    />
+                                </div>
                                 <p>No notes yet</p>
                                 <small>Select text and right-click to add a note</small>
                             </div>

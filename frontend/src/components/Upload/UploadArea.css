@@ -17,6 +17,7 @@
     max-width: 600px;
     width: 100%;
 }
+
 .upload-area.processing {
     background: var(--bg-secondary);
     border-color: var(--primary);

@@ -28,6 +28,11 @@ export default function Login() {
     return (
         <div className="login-screen">
             <div className="login-card">
+                <img 
+                    src="/logo.png" 
+                    alt="Reading Partner" 
+                    className="login-logo"
+                />
                 <h1>Reading Partner</h1>
                 <p>Reading and Research Assistant</p>
 
