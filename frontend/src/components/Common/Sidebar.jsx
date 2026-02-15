@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useReading } from '../../contexts/ReadingContext';
+import { deleteReading, renameReading, moveReadingToFolder } from '../../services/storage';
 import './Sidebar.css';
 
 export default function Sidebar({ onSelectReading }) {
@@ -14,9 +15,28 @@ export default function Sidebar({ onSelectReading }) {
     const [newFolderName, setNewFolderName] = useState('');
     const [activeFolder, setActiveFolder] = useState('all');
 
+    // Context menu state
+    const [contextMenu, setContextMenu] = useState(null);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+    // Inline rename state
+    const [renameTarget, setRenameTarget] = useState(null);
+    const [renameValue, setRenameValue] = useState('');
+    const renameInputRef = useRef(null);
+
+    // Move submenu state
+    const [showMoveSubmenu, setShowMoveSubmenu] = useState(false);
+
     useEffect(() => {
         loadAllReadings();
     }, [loadAllReadings]);
+
+    useEffect(() => {
+        if (renameTarget && renameInputRef.current) {
+            renameInputRef.current.focus();
+            renameInputRef.current.select();
+        }
+    }, [renameTarget]);
 
     const handleCreateFolder = () => {
         if (newFolderName.trim()) {
@@ -38,9 +58,93 @@ export default function Sidebar({ onSelectReading }) {
         if (activeFolder === folderId) setActiveFolder('all');
     };
 
+    // Context menu handlers
+    const handleReadingContextMenu = (e, reading) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setContextMenu({ readingId: reading.id, x: e.clientX, y: e.clientY });
+        setDeleteConfirm(null);
+        setShowMoveSubmenu(false);
+    };
+
+    const closeContextMenu = () => {
+        setContextMenu(null);
+        setDeleteConfirm(null);
+        setShowMoveSubmenu(false);
+    };
+
+    const handleRename = () => {
+        const reading = allReadings.find(r => r.id === contextMenu?.readingId);
+        if (!reading) return;
+        setRenameTarget(contextMenu.readingId);
+        setRenameValue(reading.fileName || reading.name || 'Untitled');
+        closeContextMenu();
+    };
+
+    const handleRenameSubmit = async () => {
+        if (!renameTarget || !renameValue.trim()) {
+            setRenameTarget(null);
+            return;
+        }
+        try {
+            await renameReading(renameTarget, renameValue.trim());
+            await loadAllReadings();
+        } catch (error) {
+            console.error('Error renaming reading:', error);
+        }
+        setRenameTarget(null);
+    };
+
+    const handleRenameKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleRenameSubmit();
+        } else if (e.key === 'Escape') {
+            setRenameTarget(null);
+        }
+    };
+
+    const handleDeleteReading = async () => {
+        if (!contextMenu?.readingId) return;
+        if (deleteConfirm === contextMenu.readingId) {
+            try {
+                await deleteReading(contextMenu.readingId);
+                await loadAllReadings();
+            } catch (error) {
+                console.error('Error deleting reading:', error);
+            }
+            closeContextMenu();
+        } else {
+            setDeleteConfirm(contextMenu.readingId);
+            setTimeout(() => setDeleteConfirm(null), 3000);
+        }
+    };
+
+    const handleMoveToFolder = async (folderId) => {
+        if (!contextMenu?.readingId) return;
+        try {
+            await moveReadingToFolder(contextMenu.readingId, folderId === 'all' ? null : folderId);
+            await loadAllReadings();
+        } catch (error) {
+            console.error('Error moving reading:', error);
+        }
+        closeContextMenu();
+    };
+
+    const handleItemKeyDown = (e, callback) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            callback();
+        }
+    };
+
     const filteredFolders = folders.filter(folder =>
         folder.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+    // Filter readings by active folder
+    const filteredReadings = activeFolder === 'all'
+        ? allReadings
+        : allReadings.filter(r => r.folderId === activeFolder);
 
     return (
         <div className="sidebar-content">
@@ -55,6 +159,7 @@ export default function Sidebar({ onSelectReading }) {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="search-input"
+                    aria-label="Search folders"
                 />
             </div>
 
@@ -64,7 +169,7 @@ export default function Sidebar({ onSelectReading }) {
                     <button
                         className="btn-icon-small"
                         onClick={() => setShowNewFolderInput(true)}
-                        title="New Folder"
+                        aria-label="Create new folder"
                     >
                         +
                     </button>
@@ -77,17 +182,18 @@ export default function Sidebar({ onSelectReading }) {
                             placeholder="Folder name"
                             value={newFolderName}
                             onChange={(e) => setNewFolderName(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleCreateFolder()}
+                            onKeyDown={(e) => e.key === 'Enter' && handleCreateFolder()}
+                            aria-label="New folder name"
                             autoFocus
                         />
                         <div className="new-folder-actions">
-                            <button 
+                            <button
                                 className="btn-small btn-primary"
                                 onClick={handleCreateFolder}
                             >
                                 Create
                             </button>
-                            <button 
+                            <button
                                 className="btn-small btn-ghost"
                                 onClick={() => {
                                     setShowNewFolderInput(false);
@@ -106,6 +212,10 @@ export default function Sidebar({ onSelectReading }) {
                             key={folder.id}
                             className={`folder-item ${activeFolder === folder.id ? 'active' : ''}`}
                             onClick={() => setActiveFolder(folder.id)}
+                            onKeyDown={(e) => handleItemKeyDown(e, () => setActiveFolder(folder.id))}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`${folder.name} folder`}
                         >
                             <div className="folder-main">
                                 <span className="folder-icon">{folder.icon}</span>
@@ -119,7 +229,7 @@ export default function Sidebar({ onSelectReading }) {
                                         e.stopPropagation();
                                         handleDeleteFolder(folder.id);
                                     }}
-                                    title="Delete folder"
+                                    aria-label={`Delete ${folder.name} folder`}
                                 >
                                     ×
                                 </button>
@@ -138,21 +248,40 @@ export default function Sidebar({ onSelectReading }) {
             <div className="readings-section">
                 <div className="folders-header">
                     <span>Readings</span>
-                    <span className="reading-count">{allReadings.length}</span>
+                    <span className="reading-count">{filteredReadings.length}</span>
                 </div>
                 <div className="readings-list">
-                    {allReadings.length === 0 ? (
+                    {filteredReadings.length === 0 ? (
                         <div className="empty-state">No readings yet</div>
                     ) : (
-                        allReadings.map(reading => (
+                        filteredReadings.map(reading => (
                             <div
                                 key={reading.id}
                                 className="reading-item"
-                                onClick={() => onSelectReading?.(reading)}
+                                onClick={() => renameTarget !== reading.id && onSelectReading?.(reading)}
+                                onContextMenu={(e) => handleReadingContextMenu(e, reading)}
+                                onKeyDown={(e) => handleItemKeyDown(e, () => onSelectReading?.(reading))}
+                                tabIndex={0}
+                                role="button"
+                                aria-label={`Open ${reading.fileName || reading.name || 'Untitled'}`}
                             >
                                 <span className="reading-icon">📄</span>
                                 <div className="reading-info">
-                                    <span className="reading-name">{reading.fileName || reading.name || 'Untitled'}</span>
+                                    {renameTarget === reading.id ? (
+                                        <input
+                                            ref={renameInputRef}
+                                            type="text"
+                                            className="reading-rename-input"
+                                            value={renameValue}
+                                            onChange={(e) => setRenameValue(e.target.value)}
+                                            onKeyDown={handleRenameKeyDown}
+                                            onBlur={handleRenameSubmit}
+                                            onClick={(e) => e.stopPropagation()}
+                                            aria-label="Rename reading"
+                                        />
+                                    ) : (
+                                        <span className="reading-name">{reading.fileName || reading.name || 'Untitled'}</span>
+                                    )}
                                     {reading.createdAt && (
                                         <span className="reading-date">
                                             {new Date(reading.createdAt.seconds ? reading.createdAt.seconds * 1000 : reading.createdAt).toLocaleDateString()}
@@ -169,8 +298,9 @@ export default function Sidebar({ onSelectReading }) {
                 <button
                     className="graph-view-btn"
                     onClick={() => navigate('/app/graph')}
+                    aria-label="Open graph view"
                 >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <circle cx="4" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.5" />
                         <circle cx="12" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.5" />
                         <circle cx="8" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
@@ -181,6 +311,54 @@ export default function Sidebar({ onSelectReading }) {
                     Graph View
                 </button>
             </div>
+
+            {/* Reading Context Menu */}
+            {contextMenu && (
+                <>
+                    <div
+                        className="context-menu-backdrop"
+                        onClick={closeContextMenu}
+                    />
+                    <div
+                        className="context-menu sidebar-context-menu"
+                        style={{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }}
+                        role="menu"
+                    >
+                        <button role="menuitem" onClick={handleRename}>
+                            Rename
+                        </button>
+                        <button
+                            role="menuitem"
+                            onClick={() => setShowMoveSubmenu(!showMoveSubmenu)}
+                            className={showMoveSubmenu ? 'has-submenu open' : 'has-submenu'}
+                        >
+                            Move to Folder
+                            <span className="submenu-arrow">›</span>
+                        </button>
+                        {showMoveSubmenu && (
+                            <div className="move-submenu">
+                                {folders.map(folder => (
+                                    <button
+                                        key={folder.id}
+                                        role="menuitem"
+                                        onClick={() => handleMoveToFolder(folder.id)}
+                                    >
+                                        {folder.icon} {folder.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        <div className="menu-divider"></div>
+                        <button
+                            role="menuitem"
+                            className={`context-menu-delete ${deleteConfirm === contextMenu.readingId ? 'confirming' : ''}`}
+                            onClick={handleDeleteReading}
+                        >
+                            {deleteConfirm === contextMenu.readingId ? 'Click again to confirm' : 'Delete'}
+                        </button>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

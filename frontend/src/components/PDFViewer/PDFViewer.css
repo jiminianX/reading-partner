@@ -393,9 +393,12 @@
 }
 
 .note-input-content textarea:focus {
-    outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(212, 90, 58, 0.1);
+}
+
+.note-input-content textarea:focus:not(:focus-visible) {
+    outline: none;
 }
 
 .note-actions {

@@ -47,8 +47,11 @@ textarea {
 }
 
 textarea:focus {
-    outline: none;
     border-color: var(--primary);
+}
+
+textarea:focus:not(:focus-visible) {
+    outline: none;
 }
 
 .response-saved {

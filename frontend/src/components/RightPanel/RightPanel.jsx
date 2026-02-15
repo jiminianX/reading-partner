@@ -112,6 +112,7 @@ export default function RightPanel({
                     className="collapse-shortcut"
                     onClick={() => { setCollapsed(false); setActiveTab('highlights'); }}
                     title="Highlights"
+                    aria-label="Show highlights panel"
                 >
                     H
                 </button>
@@ -119,6 +120,7 @@ export default function RightPanel({
                     className="collapse-shortcut"
                     onClick={() => { setCollapsed(false); setActiveTab('notes'); }}
                     title="Notes"
+                    aria-label="Show notes panel"
                 >
                     N
                 </button>
@@ -126,6 +128,7 @@ export default function RightPanel({
                     className="collapse-shortcut"
                     onClick={() => { setCollapsed(false); setActiveTab('questions'); }}
                     title="Questions"
+                    aria-label="Show questions panel"
                 >
                     Q
                 </button>
@@ -163,6 +166,7 @@ export default function RightPanel({
                     className="collapse-btn"
                     onClick={() => setCollapsed(true)}
                     title="Collapse panel"
+                    aria-label="Collapse panel"
                 >
                     &rsaquo;
                 </button>
@@ -183,6 +187,10 @@ export default function RightPanel({
                                         key={highlight.id}
                                         className="highlight-item"
                                         onClick={() => handleNavigate(highlight)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNavigate(highlight); } }}
+                                        tabIndex={0}
+                                        role="button"
+                                        aria-label={`Highlight on page ${highlight.pageNumber}: ${highlight.text?.slice(0, 50)}`}
                                     >
                                         <div className="highlight-header">
                                             <div
@@ -199,6 +207,7 @@ export default function RightPanel({
                                                     handleDelete('highlight', highlight.id);
                                                 }}
                                                 title={deleteConfirm === highlight.id ? 'Click again to confirm' : 'Delete'}
+                                                aria-label={deleteConfirm === highlight.id ? 'Click again to confirm delete' : 'Delete highlight'}
                                             >
                                                 {deleteConfirm === highlight.id ? '\u2713' : '\u00d7'}
                                             </button>
@@ -230,6 +239,10 @@ export default function RightPanel({
                                         key={note.id}
                                         className="note-item"
                                         onClick={() => handleNavigate(note)}
+                                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNavigate(note); } }}
+                                        tabIndex={0}
+                                        role="button"
+                                        aria-label={`Note on page ${note.pageNumber}`}
                                     >
                                         <div className="note-header">
                                             <span className="note-page">p. {note.pageNumber}</span>
@@ -240,6 +253,7 @@ export default function RightPanel({
                                                     handleDelete('note', note.id);
                                                 }}
                                                 title={deleteConfirm === note.id ? 'Click again to confirm' : 'Delete'}
+                                                aria-label={deleteConfirm === note.id ? 'Click again to confirm delete' : 'Delete note'}
                                             >
                                                 {deleteConfirm === note.id ? '\u2713' : '\u00d7'}
                                             </button>

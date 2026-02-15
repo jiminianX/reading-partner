@@ -179,6 +179,40 @@ export const saveReading = async (readingData) => {
     }
 };
 
+export const renameReading = async (readingId, newName) => {
+    try {
+        const userId = auth.currentUser?.uid;
+        if (!userId) throw new Error('Not authenticated');
+
+        const readingRef = doc(db, 'users', userId, 'pdfs', readingId);
+        await updateDoc(readingRef, {
+            fileName: newName,
+            updatedAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        console.error('Error renaming reading:', error);
+        throw error;
+    }
+};
+
+export const moveReadingToFolder = async (readingId, folderId) => {
+    try {
+        const userId = auth.currentUser?.uid;
+        if (!userId) throw new Error('Not authenticated');
+
+        const readingRef = doc(db, 'users', userId, 'pdfs', readingId);
+        await updateDoc(readingRef, {
+            folderId: folderId || null,
+            updatedAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        console.error('Error moving reading:', error);
+        throw error;
+    }
+};
+
 export const deleteReading = async (readingId) => {
     try {
         const userId = auth.currentUser?.uid;

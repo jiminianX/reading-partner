@@ -37,10 +37,13 @@
 }
 
 .search-input:focus {
-    outline: none;
     border-color: var(--primary);
     background: var(--bg-primary);
     box-shadow: 0 0 0 3px rgba(212, 90, 58, 0.08);
+}
+
+.search-input:focus:not(:focus-visible) {
+    outline: none;
 }
 
 .search-input::placeholder {
@@ -102,8 +105,11 @@
 }
 
 .new-folder-input input:focus {
-    outline: none;
     border-color: var(--primary);
+}
+
+.new-folder-input input:focus:not(:focus-visible) {
+    outline: none;
 }
 
 .new-folder-actions {
@@ -325,4 +331,61 @@
     background: var(--bg-tertiary);
     color: var(--primary);
     border-color: var(--primary);
+}
+
+/* Inline rename input */
+.reading-rename-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1.5px solid var(--primary);
+    border-radius: 4px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.88em;
+    box-shadow: 0 0 0 3px rgba(212, 90, 58, 0.1);
+}
+
+.reading-rename-input:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Sidebar context menu overrides */
+.sidebar-context-menu {
+    min-width: 180px;
+}
+
+.sidebar-context-menu .has-submenu {
+    justify-content: space-between;
+}
+
+.submenu-arrow {
+    color: var(--text-tertiary);
+    font-size: 1.1em;
+    margin-left: auto;
+}
+
+.move-submenu {
+    border-top: 1px solid var(--border);
+    padding: 4px 0 4px 12px;
+}
+
+.move-submenu button {
+    font-size: 0.82em !important;
+    padding: 8px 16px !important;
+    color: var(--text-secondary) !important;
+}
+
+.move-submenu button:hover {
+    color: var(--primary) !important;
+}
+
+.context-menu-delete {
+    color: var(--primary) !important;
+}
+
+.context-menu-delete.confirming {
+    background: var(--primary) !important;
+    color: #faf6f0 !important;
+    animation: pulse 0.6s ease infinite alternate;
 }

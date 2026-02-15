@@ -38,6 +38,7 @@ export default function PDFViewer({
     const [linkPosition, setLinkPosition] = useState({ top: 0, left: 0 });
     const [readerMode, setReaderMode] = useState(false);
     const [pageTextContent, setPageTextContent] = useState(null);
+    const [contextMenuType, setContextMenuType] = useState('text');
     const [confirmDelete, setConfirmDelete] = useState(false);
 
     const containerRef = useRef(null);
@@ -263,9 +264,12 @@ export default function PDFViewer({
         const selection = window.getSelection();
         const text = selection.toString().trim();
         if (text) {
-            setShowContextMenu(true);
-            setContextMenuPos({ x: e.clientX, y: e.clientY });
+            setContextMenuType('text');
+        } else {
+            setContextMenuType('page');
         }
+        setShowContextMenu(true);
+        setContextMenuPos({ x: e.clientX, y: e.clientY });
     };
 
     const findPageNumber = (node) => {
@@ -417,14 +421,16 @@ export default function PDFViewer({
                         className="toolbar-btn"
                         onClick={() => setScale(Math.max(0.5, scale - 0.1))}
                         title="Zoom Out"
+                        aria-label="Zoom out"
                     >
                         −
                     </button>
-                    <span className="zoom-level">{Math.round(scale * 100)}%</span>
+                    <span className="zoom-level" aria-label={`Zoom level ${Math.round(scale * 100)} percent`}>{Math.round(scale * 100)}%</span>
                     <button
                         className="toolbar-btn"
                         onClick={() => setScale(Math.min(3.0, scale + 0.1))}
                         title="Zoom In"
+                        aria-label="Zoom in"
                     >
                         +
                     </button>
@@ -454,10 +460,11 @@ export default function PDFViewer({
                         onClick={() => goToPage(currentPage - 1)}
                         disabled={currentPage <= 1}
                         title="Previous Page"
+                        aria-label="Previous page"
                     >
                         ‹
                     </button>
-                    <span className="page-info">
+                    <span className="page-info" aria-label={`Page ${currentPage} of ${numPages}`}>
                         {currentPage} / {numPages}
                     </span>
                     <button
@@ -465,6 +472,7 @@ export default function PDFViewer({
                         onClick={() => goToPage(currentPage + 1)}
                         disabled={currentPage >= numPages}
                         title="Next Page"
+                        aria-label="Next page"
                     >
                         ›
                     </button>
@@ -475,6 +483,7 @@ export default function PDFViewer({
                         className="toolbar-btn"
                         onClick={onClosePDF}
                         title="Close Reading"
+                        aria-label="Close reading"
                     >
                         ×
                     </button>
@@ -482,6 +491,7 @@ export default function PDFViewer({
                         className={`toolbar-btn toolbar-btn-delete ${confirmDelete ? 'confirming' : ''}`}
                         onClick={handleDeleteClick}
                         title={confirmDelete ? 'Click again to confirm delete' : 'Delete Reading'}
+                        aria-label={confirmDelete ? 'Click again to confirm delete' : 'Delete reading'}
                     >
                         {confirmDelete ? '?' : 'Del'}
                     </button>
@@ -545,27 +555,55 @@ export default function PDFViewer({
                                 left: `${contextMenuPos.x}px`,
                                 top: `${contextMenuPos.y}px`
                             }}
+                            role="menu"
                         >
-                            <button onClick={() => handleAddHighlight('yellow')}>
-                                <span className="color-icon" style={{ background: 'yellow' }}></span>
-                                Yellow Highlight
-                            </button>
-                            <button onClick={() => handleAddHighlight('lightgreen')}>
-                                <span className="color-icon" style={{ background: 'lightgreen' }}></span>
-                                Green Highlight
-                            </button>
-                            <button onClick={() => handleAddHighlight('lightpink')}>
-                                <span className="color-icon" style={{ background: 'lightpink' }}></span>
-                                Pink Highlight
-                            </button>
-                            <button onClick={() => handleAddHighlight('lightblue')}>
-                                <span className="color-icon" style={{ background: 'lightblue' }}></span>
-                                Blue Highlight
-                            </button>
-                            <div className="menu-divider"></div>
-                            <button onClick={handleOpenNoteInput}>
-                                Add Note
-                            </button>
+                            {contextMenuType === 'text' ? (
+                                <>
+                                    <button role="menuitem" onClick={() => handleAddHighlight('yellow')}>
+                                        <span className="color-icon" style={{ background: 'yellow' }}></span>
+                                        Yellow Highlight
+                                    </button>
+                                    <button role="menuitem" onClick={() => handleAddHighlight('lightgreen')}>
+                                        <span className="color-icon" style={{ background: 'lightgreen' }}></span>
+                                        Green Highlight
+                                    </button>
+                                    <button role="menuitem" onClick={() => handleAddHighlight('lightpink')}>
+                                        <span className="color-icon" style={{ background: 'lightpink' }}></span>
+                                        Pink Highlight
+                                    </button>
+                                    <button role="menuitem" onClick={() => handleAddHighlight('lightblue')}>
+                                        <span className="color-icon" style={{ background: 'lightblue' }}></span>
+                                        Blue Highlight
+                                    </button>
+                                    <div className="menu-divider"></div>
+                                    <button role="menuitem" onClick={handleOpenNoteInput}>
+                                        Add Note
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button role="menuitem" onClick={() => { setShowContextMenu(false); onClosePDF?.(); }}>
+                                        Close Reading
+                                    </button>
+                                    <div className="menu-divider"></div>
+                                    <button
+                                        role="menuitem"
+                                        className={`context-menu-delete ${confirmDelete ? 'confirming' : ''}`}
+                                        onClick={() => {
+                                            if (confirmDelete) {
+                                                setShowContextMenu(false);
+                                                onDeleteReading?.();
+                                                setConfirmDelete(false);
+                                            } else {
+                                                setConfirmDelete(true);
+                                                setTimeout(() => setConfirmDelete(false), 3000);
+                                            }
+                                        }}
+                                    >
+                                        {confirmDelete ? 'Click again to confirm' : 'Delete Reading'}
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </>
                 )}
