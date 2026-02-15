@@ -1,14 +1,10 @@
 import { useState } from 'react';
 import './PDFViewer.css'; // Reuse same styles
 
-export default function ImageViewer({ 
-    image, 
-    highlights, 
-    notes,
-    onAddHighlight, 
+export default function ImageViewer({
+    image,
+    onAddHighlight,
     onAddNote,
-    onDeleteHighlight,
-    onDeleteNote 
 }) {
     const [scale, setScale] = useState(1.0);
     const [selectedText, setSelectedText] = useState(null);

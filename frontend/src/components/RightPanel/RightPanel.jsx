@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useReading } from '../../contexts/ReadingContext';
 import { getLinksForReading } from '../../services/storage';
+import { saveResponse } from '../../services/api';
 import './RightPanel.css';
 
 function renderNoteWithLinks(text, onLinkClick, allReadings) {
@@ -38,6 +39,8 @@ export default function RightPanel({
     onDeleteHighlight,
     onNavigateToItem,
     onSelectReading,
+    onGenerateQuestions,
+    questionsLoading,
     currentPdfId
 }) {
     const { allReadings } = useReading();
@@ -45,6 +48,8 @@ export default function RightPanel({
     const [deleteConfirm, setDeleteConfirm] = useState(null);
     const [collapsed, setCollapsed] = useState(false);
     const [backlinks, setBacklinks] = useState([]);
+    const [answers, setAnswers] = useState({});
+    const [savedAnswers, setSavedAnswers] = useState({});
 
     useEffect(() => {
         if (!currentPdfId) {
@@ -53,6 +58,23 @@ export default function RightPanel({
         }
         getLinksForReading(currentPdfId).then(setBacklinks).catch(() => setBacklinks([]));
     }, [currentPdfId, notes]);
+
+    // Reset answers when questions change
+    useEffect(() => {
+        setAnswers({});
+        setSavedAnswers({});
+    }, [questions]);
+
+    const handleSaveAnswer = async (index) => {
+        const answer = answers[index]?.trim();
+        if (!answer || !currentPdfId) return;
+        try {
+            await saveResponse(currentPdfId, index, answer);
+            setSavedAnswers(prev => ({ ...prev, [index]: true }));
+        } catch (error) {
+            console.error('Error saving response:', error);
+        }
+    };
 
     const handleNavigate = (item) => {
         if (onNavigateToItem && item.pageNumber) {
@@ -134,6 +156,7 @@ export default function RightPanel({
                         onClick={() => setActiveTab('questions')}
                     >
                         Questions
+                        {questions.length > 0 && <span className="tab-badge">{questions.length}</span>}
                     </button>
                 </div>
                 <button
@@ -269,19 +292,45 @@ export default function RightPanel({
                 {activeTab === 'questions' && (
                     <div className="questions-tab">
                         <div className="generate-section">
-                            <p className="helper-text">
-                                Questions feature coming soon
-                            </p>
-                            <p className="helper-hint">
-                                Select text to generate comprehension questions
-                            </p>
+                            {onGenerateQuestions ? (
+                                <>
+                                    <p className="helper-text">
+                                        Generate comprehension questions from the current reading
+                                    </p>
+                                    <button
+                                        className="generate-btn"
+                                        onClick={onGenerateQuestions}
+                                        disabled={questionsLoading}
+                                    >
+                                        {questionsLoading ? (
+                                            <>
+                                                <span className="btn-spinner" />
+                                                Generating...
+                                            </>
+                                        ) : (
+                                            questions.length > 0 ? 'Regenerate Questions' : 'Generate Questions'
+                                        )}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <p className="helper-text">
+                                        Open a reading to generate questions
+                                    </p>
+                                    <p className="helper-hint">
+                                        AI-powered comprehension questions based on the text
+                                    </p>
+                                </>
+                            )}
                         </div>
 
                         {questions.length === 0 ? (
-                            <div className="empty-state">
-                                <p className="empty-title">No questions yet</p>
-                                <p className="empty-hint">Questions will appear here after generation</p>
-                            </div>
+                            !questionsLoading && (
+                                <div className="empty-state">
+                                    <p className="empty-title">No questions yet</p>
+                                    <p className="empty-hint">Questions will appear here after generation</p>
+                                </div>
+                            )
                         ) : (
                             <div className="questions-list">
                                 {questions.map((q, index) => (
@@ -289,11 +338,32 @@ export default function RightPanel({
                                         {q.type && (
                                             <span className="question-type-pill">{q.type}</span>
                                         )}
+                                        {q.title && (
+                                            <div className="question-title">{q.title}</div>
+                                        )}
                                         <div className="question-text">{q.question}</div>
                                         <textarea
                                             placeholder="Write your answer..."
                                             rows="3"
+                                            value={answers[index] || ''}
+                                            onChange={(e) => {
+                                                setAnswers(prev => ({ ...prev, [index]: e.target.value }));
+                                                setSavedAnswers(prev => ({ ...prev, [index]: false }));
+                                            }}
                                         />
+                                        <div className="answer-actions">
+                                            {savedAnswers[index] ? (
+                                                <span className="answer-saved">Saved</span>
+                                            ) : (
+                                                <button
+                                                    className="save-answer-btn"
+                                                    onClick={() => handleSaveAnswer(index)}
+                                                    disabled={!answers[index]?.trim()}
+                                                >
+                                                    Save
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>

@@ -58,7 +58,7 @@ export const ThemeToggleButton = ({
     }
 
     onClick?.();
-  }, [onClick, variant, start, theme]);
+  }, [onClick, variant, start]);
 
   return (
     <button
@@ -96,6 +96,7 @@ export const ThemeToggleButton = ({
   );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useThemeTransition = () => {
   const startTransition = useCallback((updateFn) => {
     if ('startViewTransition' in document) {

@@ -27,6 +27,7 @@ import {
     savePreReading,
     getPreReading,
     generateCheckIn,
+    generateQuestions,
     saveCheckIn as apiSaveCheckIn,
     saveReflection as apiSaveReflection,
 } from './services/api';
@@ -41,6 +42,7 @@ function MainApp() {
     const [notes, setNotes] = useState([]);
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [questionsLoading, setQuestionsLoading] = useState(false);
 
     // Scaffolding state
     const [showPreReading, setShowPreReading] = useState(false);
@@ -217,6 +219,24 @@ function MainApp() {
         setShowReflection(false);
     };
 
+    const handleGenerateQuestions = async () => {
+        const text = pdfTextRef.current;
+        if (!text || text.trim().length < 100) {
+            alert('Not enough text to generate questions. The document needs at least 100 characters of extractable text.');
+            return;
+        }
+        setQuestionsLoading(true);
+        try {
+            const result = await generateQuestions(text);
+            setQuestions(result.questions || []);
+        } catch (error) {
+            console.error('Error generating questions:', error);
+            alert('Failed to generate questions. Please try again.');
+        } finally {
+            setQuestionsLoading(false);
+        }
+    };
+
     const handleAddHighlight = async (highlightData) => {
         if (!currentPDF?.id) return;
 
@@ -335,6 +355,8 @@ function MainApp() {
                             onDeleteHighlight={handleDeleteHighlight}
                             onNavigateToItem={handleNavigateToItem}
                             onSelectReading={handleFileSelect}
+                            onGenerateQuestions={currentPDF ? handleGenerateQuestions : null}
+                            questionsLoading={questionsLoading}
                             currentPdfId={currentPDF?.id}
                         />
                     </div>

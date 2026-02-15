@@ -3,6 +3,7 @@ import { getAllReadings } from '../services/storage';
 
 const ReadingContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useReading = () => {
     const context = useContext(ReadingContext);
     if (!context) {
