@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useReading } from '../../contexts/ReadingContext';
 import './Sidebar.css';
 
-export default function Sidebar() {
+export default function Sidebar({ onSelectReading }) {
+    const navigate = useNavigate();
+    const { allReadings, loadAllReadings } = useReading();
     const [searchQuery, setSearchQuery] = useState('');
     const [folders, setFolders] = useState([
         { id: 'all', name: 'All Readings', count: 0, icon: '' }
@@ -9,6 +13,10 @@ export default function Sidebar() {
     const [showNewFolderInput, setShowNewFolderInput] = useState(false);
     const [newFolderName, setNewFolderName] = useState('');
     const [activeFolder, setActiveFolder] = useState('all');
+
+    useEffect(() => {
+        loadAllReadings();
+    }, [loadAllReadings]);
 
     const handleCreateFolder = () => {
         if (newFolderName.trim()) {
@@ -125,6 +133,53 @@ export default function Sidebar() {
                         No folders match your search
                     </div>
                 )}
+            </div>
+
+            <div className="readings-section">
+                <div className="folders-header">
+                    <span>Readings</span>
+                    <span className="reading-count">{allReadings.length}</span>
+                </div>
+                <div className="readings-list">
+                    {allReadings.length === 0 ? (
+                        <div className="empty-state">No readings yet</div>
+                    ) : (
+                        allReadings.map(reading => (
+                            <div
+                                key={reading.id}
+                                className="reading-item"
+                                onClick={() => onSelectReading?.(reading)}
+                            >
+                                <span className="reading-icon">📄</span>
+                                <div className="reading-info">
+                                    <span className="reading-name">{reading.fileName || reading.name || 'Untitled'}</span>
+                                    {reading.createdAt && (
+                                        <span className="reading-date">
+                                            {new Date(reading.createdAt.seconds ? reading.createdAt.seconds * 1000 : reading.createdAt).toLocaleDateString()}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            <div className="sidebar-footer">
+                <button
+                    className="graph-view-btn"
+                    onClick={() => navigate('/app/graph')}
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="4" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                        <circle cx="12" cy="4" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                        <circle cx="8" cy="13" r="2.5" stroke="currentColor" strokeWidth="1.5" />
+                        <line x1="5.5" y1="5.5" x2="7" y2="11" stroke="currentColor" strokeWidth="1.2" />
+                        <line x1="10.5" y1="5.5" x2="9" y2="11" stroke="currentColor" strokeWidth="1.2" />
+                        <line x1="6" y1="4" x2="10" y2="4" stroke="currentColor" strokeWidth="1.2" />
+                    </svg>
+                    Graph View
+                </button>
             </div>
         </div>
     );

@@ -229,3 +229,100 @@
     font-size: 0.9em;
     padding: 20px;
 }
+
+/* Readings section */
+.readings-section {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.reading-count {
+    font-family: var(--font-mono);
+    font-size: 1em;
+    color: var(--text-tertiary);
+}
+
+.readings-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.reading-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.reading-item:hover {
+    background: var(--bg-secondary);
+    border-left-color: var(--secondary);
+}
+
+.reading-icon {
+    font-size: 1em;
+    flex-shrink: 0;
+}
+
+.reading-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+}
+
+.reading-name {
+    color: var(--text-primary);
+    font-size: 0.88em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reading-date {
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    margin-top: 2px;
+}
+
+/* Graph view button */
+.sidebar-footer {
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+    flex-shrink: 0;
+}
+
+.graph-view-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.88em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.graph-view-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--primary);
+    border-color: var(--primary);
+}

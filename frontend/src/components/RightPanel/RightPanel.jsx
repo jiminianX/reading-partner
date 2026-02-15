@@ -1,5 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useReading } from '../../contexts/ReadingContext';
+import { getLinksForReading } from '../../services/storage';
 import './RightPanel.css';
+
+function renderNoteWithLinks(text, onLinkClick, allReadings) {
+    if (!text) return null;
+    const parts = text.split(/(\[\[.*?\]\])/g);
+    return parts.map((part, i) => {
+        const match = part.match(/^\[\[(.*?)\]\]$/);
+        if (match) {
+            const name = match[1];
+            const reading = allReadings.find(r =>
+                (r.fileName || r.name || '') === name
+            );
+            return (
+                <span
+                    key={i}
+                    className="note-link"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (reading) onLinkClick?.(reading);
+                    }}
+                >
+                    {name}
+                </span>
+            );
+        }
+        return <span key={i}>{part}</span>;
+    });
+}
 
 export default function RightPanel({
     questions,
@@ -7,11 +36,23 @@ export default function RightPanel({
     highlights,
     onDeleteNote,
     onDeleteHighlight,
-    onNavigateToItem
+    onNavigateToItem,
+    onSelectReading,
+    currentPdfId
 }) {
+    const { allReadings } = useReading();
     const [activeTab, setActiveTab] = useState('highlights');
     const [deleteConfirm, setDeleteConfirm] = useState(null);
     const [collapsed, setCollapsed] = useState(false);
+    const [backlinks, setBacklinks] = useState([]);
+
+    useEffect(() => {
+        if (!currentPdfId) {
+            setBacklinks([]);
+            return;
+        }
+        getLinksForReading(currentPdfId).then(setBacklinks).catch(() => setBacklinks([]));
+    }, [currentPdfId, notes]);
 
     const handleNavigate = (item) => {
         if (onNavigateToItem && item.pageNumber) {
@@ -183,7 +224,9 @@ export default function RightPanel({
                                         {note.context && (
                                             <div className="note-context">{note.context}</div>
                                         )}
-                                        <div className="note-text">{note.text}</div>
+                                        <div className="note-text">
+                                            {renderNoteWithLinks(note.text, onSelectReading, allReadings)}
+                                        </div>
                                         {note.timestamp && (
                                             <div className="item-timestamp">
                                                 {formatTimestamp(note.timestamp)}
@@ -191,6 +234,33 @@ export default function RightPanel({
                                         )}
                                     </div>
                                 ))}
+                            </div>
+                        )}
+
+                        {backlinks.length > 0 && (
+                            <div className="backlinks-section">
+                                <div className="backlinks-header">
+                                    <span className="backlinks-label">Linked Mentions</span>
+                                    <span className="backlinks-count">{backlinks.length}</span>
+                                </div>
+                                {backlinks.map(link => {
+                                    const linkedId = link.direction === 'incoming' ? link.sourceReadingId : link.targetReadingId;
+                                    const linkedReading = allReadings.find(r => r.id === linkedId);
+                                    return (
+                                        <div
+                                            key={link.id}
+                                            className="backlink-item"
+                                            onClick={() => linkedReading && onSelectReading?.(linkedReading)}
+                                        >
+                                            <span className="backlink-direction">
+                                                {link.direction === 'incoming' ? '←' : '→'}
+                                            </span>
+                                            <span className="backlink-name">
+                                                {linkedReading?.fileName || linkedReading?.name || 'Unknown'}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

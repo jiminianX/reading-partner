@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { signIn, signUp } from '../../services/firebase';
+import Logo from '../Common/Logo';
 import './Login.css';
 
 export default function Login() {
+    const navigate = useNavigate();
     const [isSignup, setIsSignup] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -14,25 +17,23 @@ export default function Login() {
         setError('');
         setLoading(true);
 
-        const result = isSignup 
+        const result = isSignup
             ? await signUp(email, password)
             : await signIn(email, password);
 
-        if (!result.success) {
+        if (result.success) {
+            navigate('/app');
+        } else {
             setError(result.error);
         }
-        
+
         setLoading(false);
     };
 
     return (
         <div className="login-screen">
             <div className="login-card">
-                <img 
-                    src="/logo.png" 
-                    alt="Reading Partner" 
-                    className="login-logo"
-                />
+                <Logo size={100} className="login-logo" />
                 <h1>Reading Partner</h1>
                 <p>Reading and Research Assistant</p>
 
@@ -72,6 +73,10 @@ export default function Login() {
                         </a>
                     </div>
                 </form>
+
+                <div className="back-to-home">
+                    <Link to="/">&larr; Back to home</Link>
+                </div>
             </div>
         </div>
     );

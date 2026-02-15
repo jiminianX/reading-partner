@@ -1,0 +1,124 @@
+.reader-mode {
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 48px 40px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.15);
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.reader-page-label {
+    font-family: var(--font-mono);
+    font-size: 0.75em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.reader-body {
+    flex: 1;
+}
+
+.reader-paragraph {
+    font-family: var(--font-display);
+    font-size: 1.15em;
+    line-height: 1.75;
+    color: var(--text-primary);
+    margin-bottom: 1.2em;
+    text-indent: 0;
+}
+
+.reader-paragraph::selection {
+    background: rgba(212, 90, 58, 0.25);
+}
+
+.reader-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    color: var(--text-tertiary);
+    font-style: italic;
+}
+
+.reader-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-secondary);
+}
+
+.reader-empty p {
+    font-family: var(--font-display);
+    font-size: 1.1em;
+    margin-bottom: 8px;
+}
+
+.reader-empty-hint {
+    font-size: 0.88em !important;
+    color: var(--text-tertiary);
+}
+
+.reader-disclaimer {
+    font-family: var(--font-mono);
+    font-size: 0.72em;
+    color: var(--text-tertiary);
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-style: italic;
+}
+
+.reader-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.reader-nav-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: var(--font-body);
+    font-size: 0.88em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.reader-nav-btn:hover:not(:disabled) {
+    background: var(--bg-tertiary);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.reader-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.reader-nav-page {
+    font-family: var(--font-mono);
+    font-size: 0.82em;
+    color: var(--text-tertiary);
+}
+
+@media (max-width: 768px) {
+    .reader-mode {
+        padding: 24px 20px;
+    }
+
+    .reader-paragraph {
+        font-size: 1.05em;
+    }
+}

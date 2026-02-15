@@ -4,7 +4,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { ThemeToggleButton, useThemeTransition } from './ThemeToggleButton';
 import './Header.css';
 
-export default function Header() {
+export default function Header({ onReflect }) {
     const { currentUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const { startTransition } = useThemeTransition();
@@ -32,6 +32,11 @@ export default function Header() {
                     onClick={handleThemeToggle}
                 />
                 <span className="user-name">{userName}</span>
+                {onReflect && (
+                    <button className="btn btn-secondary btn-small" onClick={onReflect}>
+                        Reflect
+                    </button>
+                )}
                 <button className="btn btn-secondary btn-small" onClick={handleLogout}>
                     Logout
                 </button>

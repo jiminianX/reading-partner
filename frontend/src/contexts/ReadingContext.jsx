@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
+import { getAllReadings } from '../services/storage';
 
 const ReadingContext = createContext();
 
@@ -13,12 +14,27 @@ export const useReading = () => {
 export const ReadingProvider = ({ children }) => {
     const [currentReading, setCurrentReading] = useState(null);
     const [notes, setNotes] = useState([]);
+    const [allReadings, setAllReadings] = useState([]);
+
+    const loadAllReadings = useCallback(async () => {
+        try {
+            const readings = await getAllReadings();
+            setAllReadings(readings);
+            return readings;
+        } catch (error) {
+            console.error('Error loading all readings:', error);
+            return [];
+        }
+    }, []);
 
     const value = {
         currentReading,
         setCurrentReading,
         notes,
-        setNotes
+        setNotes,
+        allReadings,
+        setAllReadings,
+        loadAllReadings
     };
 
     return (

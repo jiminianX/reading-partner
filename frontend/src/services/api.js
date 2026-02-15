@@ -68,3 +68,45 @@ export const healthCheck = async () => {
         return { status: 'error' };
     }
 };
+
+// Scaffolding API
+
+export const savePreReading = async (readingId, priorKnowledge, learningGoals) => {
+    return await apiRequest('/api/scaffolding/pre-reading', {
+        method: 'POST',
+        body: JSON.stringify({ readingId, priorKnowledge, learningGoals })
+    });
+};
+
+export const getPreReading = async (readingId) => {
+    return await apiRequest(`/api/scaffolding/pre-reading/${readingId}`);
+};
+
+export const generateCheckIn = async (text, priorKnowledge, learningGoals, pageNumber) => {
+    return await apiRequest('/api/scaffolding/generate-check-in', {
+        method: 'POST',
+        body: JSON.stringify({ text, priorKnowledge, learningGoals, pageNumber })
+    });
+};
+
+export const saveCheckIn = async (readingId, prompt, response, checkInType, pageNumber) => {
+    return await apiRequest('/api/scaffolding/check-in', {
+        method: 'POST',
+        body: JSON.stringify({ readingId, prompt, response, checkInType, pageNumber })
+    });
+};
+
+export const getCheckIns = async (readingId) => {
+    return await apiRequest(`/api/scaffolding/check-ins/${readingId}`);
+};
+
+export const saveReflection = async (readingId, response) => {
+    return await apiRequest('/api/scaffolding/reflection', {
+        method: 'POST',
+        body: JSON.stringify({ readingId, response })
+    });
+};
+
+export const getReflection = async (readingId) => {
+    return await apiRequest(`/api/scaffolding/reflection/${readingId}`);
+};

@@ -14,6 +14,7 @@ const questionsRouter = require('./src/routes/questions');
 const notesRouter = require('./src/routes/notes');
 const readingsRouter = require('./src/routes/readings');
 const responsesRouter = require('./src/routes/responses');
+const scaffoldingRouter = require('./src/routes/scaffolding');
 
 const app = express();
 
@@ -40,6 +41,7 @@ const aiLimiter = rateLimit({
 
 app.use('/api/', apiLimiter);
 app.use('/api/generate-questions', aiLimiter);
+app.use('/api/scaffolding/generate-check-in', aiLimiter);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -64,6 +66,7 @@ app.use('/api/generate-questions', questionsRouter);
 app.use('/api/notes', notesRouter);
 app.use('/api/readings', readingsRouter);
 app.use('/api/responses', responsesRouter);
+app.use('/api/scaffolding', scaffoldingRouter);
 
 // Error handling
 app.use((err, req, res, next) => {

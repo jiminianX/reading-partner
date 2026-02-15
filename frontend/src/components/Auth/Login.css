@@ -1,8 +1,7 @@
 .login-logo {
-    width: 100px;
-    height: 100px;
     margin: 0 auto 24px;
     display: block;
+    color: var(--primary);
     animation: logoEntrance 0.8s ease-out;
 }
 
@@ -76,4 +75,22 @@
 
 .auth-toggle a:hover {
     text-decoration: underline;
+}
+
+.back-to-home {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.back-to-home a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 0.82em;
+    letter-spacing: 0.02em;
+}
+
+.back-to-home a:hover {
+    color: var(--text-primary);
 }
