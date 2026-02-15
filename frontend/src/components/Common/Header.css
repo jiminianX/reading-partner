@@ -1,20 +1,35 @@
 .header {
     background: var(--bg-primary);
-    padding: 20px 30px;
-    box-shadow: 0 5px 15px var(--shadow);
+    padding: 18px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Cinnabar accent line */
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), transparent);
 }
 
 .header h1 {
-    color: var(--primary);
-    font-size: 1.8em;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1.5em;
+    font-weight: 500;
+    font-style: italic;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
+    letter-spacing: -0.02em;
 }
 
 .user-info {
@@ -27,4 +42,6 @@
 
 .user-name {
     color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 400;
 }

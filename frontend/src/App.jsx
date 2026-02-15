@@ -52,25 +52,11 @@ function App() {
         }
     };
 
-    const handleFileSelect = async (file) => {
-        console.log('📁 File selected:', file.name, file.type, file.size);
-        if (file.type === 'application/pdf') {
-            const fileURL = URL.createObjectURL(file);
-            console.log('🔗 Created blob URL:', fileURL);
-            const pdfData = {
-                fileName: file.name,
-                fileURL: fileURL,
-                id: `pdf_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-            };
-            console.log('📦 Setting PDF data:', pdfData);
-
-            setCurrentPDF(pdfData);
-            setHighlights([]);
-            setNotes([]);
-            setQuestions([]);
-        } else {
-            alert('Please upload a PDF file');
-        }
+    const handleFileSelect = (fileData) => {
+        setCurrentPDF(fileData);
+        setHighlights([]);
+        setNotes([]);
+        setQuestions([]);
     };
 
     // Optimistic update for highlights

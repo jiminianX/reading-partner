@@ -1,30 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Outfit:wght@100..900&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
 
 :root {
-    --primary: #768ac1;
-    --primary-dark: #160a42;
-    --secondary: #ab9be5;
-    --bg-primary: #f2f0e4;
-    --bg-secondary: #9c97d9;
-    --bg-tertiary: #170937;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --text-tertiary: #ffffff;
-    --border: #ffe5d9;
-    --shadow: rgba(255, 107, 74, 0.1);
+    --primary: #d45a3a;
+    --primary-dark: #b8432a;
+    --secondary: #c9a24e;
+    --bg-primary: #faf6f0;
+    --bg-secondary: #f0ebe3;
+    --bg-tertiary: #e6dfd5;
+    --text-primary: #2c2520;
+    --text-secondary: #6b5e53;
+    --text-tertiary: #9a8d82;
+    --border: #ddd5ca;
+    --shadow: rgba(52, 46, 40, 0.08);
+
+    --font-display: 'Newsreader', 'Georgia', serif;
+    --font-body: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Menlo', monospace;
 }
 
 [data-theme="dark"] {
-    --primary: #7f2189;
-    --primary-dark: #C28CE2;
-    --secondary: #5f2d59;
-    --bg-primary: #1a1a1a;
-    --bg-secondary: #2d2d2d;
-    --bg-tertiary: #404040;
-    --text-primary: #e0e0e0;
-    --text-secondary: #b0b0b0;
-    --text-tertiary: #808080;
-    --border: #404040;
+    --primary: #d45a3a;
+    --primary-dark: #e8755a;
+    --secondary: #c9a24e;
+    --bg-primary: #12100e;
+    --bg-secondary: #1e1b18;
+    --bg-tertiary: #2a2622;
+    --text-primary: #e8e0d6;
+    --text-secondary: #a89b8e;
+    --text-tertiary: #6b5e53;
+    --border: #342e28;
     --shadow: rgba(0, 0, 0, 0.3);
 }
 
@@ -36,10 +40,24 @@
 }
 
 body {
-    font-family: 'Roboto Flex', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     background: var(--bg-secondary);
     min-height: 100vh;
     color: var(--text-primary);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+}
+
+code, pre, .mono {
+    font-family: var(--font-mono);
 }
 
 .container {
@@ -50,39 +68,45 @@ body {
 
 .btn {
     background: var(--primary);
-    color: white;
+    color: #faf6f0;
     border: none;
     padding: 12px 30px;
-    font-size: 1em;
+    font-size: 0.9em;
     cursor: pointer;
-    font-family: 'Roboto Flex', sans-serif;
-    border-radius: 8px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    border-radius: 6px;
     transition: all 0.2s ease;
+    letter-spacing: 0.02em;
 }
 
 .btn:hover {
     background: var(--primary-dark);
     transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(212, 90, 58, 0.25);
 }
 
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .btn-secondary {
-    background: var(--bg-primary);
+    background: transparent;
     color: var(--primary);
-    border: 2px solid var(--primary);
+    border: 1.5px solid var(--primary);
 }
 
 .btn-secondary:hover {
-    background: var(--bg-secondary);
+    background: rgba(212, 90, 58, 0.08);
+    box-shadow: none;
 }
 
 .btn-small {
     padding: 8px 20px;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 
 .form-group {
@@ -91,25 +115,29 @@ body {
 
 .form-group label {
     display: block;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     margin-bottom: 8px;
     font-weight: 500;
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
 }
 
 .form-group input {
     width: 100%;
-    padding: 12px;
-    border: 2px solid var(--border);
-    border-radius: 8px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
     font-size: 1em;
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Roboto Flex', sans-serif;
+    font-family: var(--font-body);
 }
 
 .form-group input:focus {
     outline: none;
     border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(212, 90, 58, 0.1);
 }
 
 .error-message {
@@ -126,3 +154,22 @@ body {
 .mt-2 { margin-top: 20px; }
 .mb-1 { margin-bottom: 10px; }
 .mb-2 { margin-bottom: 20px; }
+
+/* Scrollbar base */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
